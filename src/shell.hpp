@@ -25,7 +25,7 @@ private:
     bool CheckCmd(const std::string& cmd);
     bool ExecCmd(const std::string& cmd);
 
-    std::unordered_map<std::string, std::function<void()>> m_Cmds {
+    const std::unordered_map<std::string, std::function<void()>> m_Cmds {
         {"type", std::bind(&Shell::CmdType, this)},
         {"exit", std::bind(&Shell::CmdExit, this)},
         {"echo", std::bind(&Shell::CmdEcho, this)},
