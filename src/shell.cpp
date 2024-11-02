@@ -73,16 +73,18 @@ void Shell::CmdPwd() {
 }
 
 void Shell::CmdCd() {
-    std::string dir;
-    m_ISStream >> dir;
+    std::string path;
+    m_ISStream >> path;
 
-    if (fs::exists(dir))
-        if (fs::is_directory(dir))
-            fs::current_path(dir); 
+    if (fs::exists(path))
+        if (fs::is_directory(path))
+            fs::current_path(path); 
         else
-            std::cerr << "cd: not a directory: " << dir << '\n';
+            std::cerr << "cd: not a directory: " << path << '\n';
+    else if (path == "~")
+        fs::current_path(fs::path(getenv("HOME")));
     else
-        std::cerr << "cd: " << dir << ": No such file or directory\n";
+        std::cerr << "cd: " << path << ": No such file or directory\n";
 }
 
 void Shell::TokenizeString(const std::string& str, const char delim) {
