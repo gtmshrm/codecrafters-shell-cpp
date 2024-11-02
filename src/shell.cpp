@@ -63,6 +63,15 @@ void Shell::CmdEcho() {
     std::cout << output << '\n';
 }
 
+void Shell::CmdPwd() {
+    try {
+        const auto pwd = fs::current_path().string();
+        std::cout << pwd << '\n';
+    } catch (const fs::filesystem_error& e) {
+        std::cerr << "Error getting current working directory: " << e.what() << '\n';
+    }
+}
+
 void Shell::TokenizeString(const std::string& str, const char delim) {
     std::string token;
     std::istringstream iss(str);

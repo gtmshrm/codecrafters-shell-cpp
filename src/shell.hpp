@@ -18,6 +18,7 @@ private:
     void CmdType();
     void CmdExit();
     void CmdEcho();
+    void CmdPwd();
 
     void TokenizeString(const std::string& str, const char delim);
     bool CheckCmd(const std::string& cmd);
@@ -27,6 +28,7 @@ private:
         {"type", std::bind(&Shell::CmdType, this)},
         {"exit", std::bind(&Shell::CmdExit, this)},
         {"echo", std::bind(&Shell::CmdEcho, this)},
+        {"pwd", std::bind(&Shell::CmdPwd, this)},
     };
 
     std::string m_Prompt;
