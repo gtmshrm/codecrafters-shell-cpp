@@ -22,11 +22,12 @@ Shell::Shell(const std::string prompt) : m_Prompt(prompt) {
 
         m_ISStream = std::istringstream(input);
         m_ISStream >> input;
+        m_CurrentCmd = m_ISStream.str();
 
         auto it = m_Cmds.find(input);
         if (it != m_Cmds.end())
             it->second();
-        else if (!ExecCmd(input, m_ISStream.str()))
+        else if (!ExecCmd(input))
             std::cerr << input << ": command not found\n";
     }
 }
@@ -65,11 +66,23 @@ void Shell::CmdEcho() {
 
 void Shell::CmdPwd() {
     try {
-        const auto pwd = fs::current_path().string();
-        std::cout << pwd << '\n';
+        std::cout << fs::current_path().string() << '\n';
     } catch (const fs::filesystem_error& e) {
         std::cerr << "Error getting current working directory: " << e.what() << '\n';
     }
+}
+
+void Shell::CmdCd() {
+    std::string dir;
+    m_ISStream >> dir;
+
+    if (fs::exists(dir))
+        if (fs::is_directory(dir))
+            fs::current_path(dir); 
+        else
+            std::cerr << "cd: not a directory: " << dir << '\n';
+    else
+        std::cerr << "cd: " << dir << ": No such file or directory\n";
 }
 
 void Shell::TokenizeString(const std::string& str, const char delim) {
@@ -92,11 +105,11 @@ bool Shell::CheckCmd(const std::string& cmd) {
     return false;
 }
 
-bool Shell::ExecCmd(const std::string& cmd, const std::string cmdWithArgs) {
+bool Shell::ExecCmd(const std::string& cmd) {
     for (const auto& dir : m_PathEnv) {
         const fs::path path = dir / fs::path(cmd);
         if (fs::exists(path)) {
-            system(cmdWithArgs.c_str());
+            system(m_CurrentCmd.c_str());
             return true;
         }
     }

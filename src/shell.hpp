@@ -19,19 +19,22 @@ private:
     void CmdExit();
     void CmdEcho();
     void CmdPwd();
+    void CmdCd();
 
     void TokenizeString(const std::string& str, const char delim);
     bool CheckCmd(const std::string& cmd);
-    bool ExecCmd(const std::string& cmd, const std::string cmdWithArgs);
+    bool ExecCmd(const std::string& cmd);
 
     std::unordered_map<std::string, std::function<void()>> m_Cmds {
         {"type", std::bind(&Shell::CmdType, this)},
         {"exit", std::bind(&Shell::CmdExit, this)},
         {"echo", std::bind(&Shell::CmdEcho, this)},
         {"pwd", std::bind(&Shell::CmdPwd, this)},
+        {"cd", std::bind(&Shell::CmdCd, this)},
     };
 
     std::string m_Prompt;
+    std::string m_CurrentCmd;
     std::istringstream m_ISStream;
     std::vector<fs::path> m_PathEnv;
 };
