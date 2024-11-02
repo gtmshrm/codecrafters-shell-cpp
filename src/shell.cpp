@@ -26,7 +26,7 @@ Shell::Shell(const std::string prompt) : m_Prompt(prompt) {
         auto it = m_Cmds.find(input);
         if (it != m_Cmds.end())
             it->second();
-        else
+        else if (!ExecCmd(input, m_ISStream.str()))
             std::cerr << input << ": command not found\n";
     }
 }
@@ -37,7 +37,7 @@ void Shell::CmdType() {
     while (m_ISStream >> input) {
         if (m_Cmds.find(input) != m_Cmds.end())
             std::cout << input << " is a shell builtin\n";
-        else if (!CheckCmdInPath(input))
+        else if (!CheckCmd(input))
             std::cerr << input << ": not found\n";
     }
 }
@@ -71,11 +71,23 @@ void Shell::TokenizeString(const std::string& str, const char delim) {
         m_PathEnv.push_back(token);
 }
 
-bool Shell::CheckCmdInPath(const std::string& cmd) {
+bool Shell::CheckCmd(const std::string& cmd) {
     for (const auto& dir : m_PathEnv) {
         const fs::path path = dir / fs::path(cmd);
         if (fs::exists(path)) {
             std::cout << cmd << " is " << path.string() << '\n';
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+bool Shell::ExecCmd(const std::string& cmd, const std::string cmdWithArgs) {
+    for (const auto& dir : m_PathEnv) {
+        const fs::path path = dir / fs::path(cmd);
+        if (fs::exists(path)) {
+            system(cmdWithArgs.c_str());
             return true;
         }
     }

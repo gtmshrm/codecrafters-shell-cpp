@@ -1,10 +1,11 @@
 #pragma once
 
-#include <sstream>
+#include <cstdlib>
+#include <filesystem>
+#include <functional>
 #include <iostream>
 #include <optional>
-#include <functional>
-#include <filesystem>
+#include <sstream>
 #include <unordered_map>
 
 namespace fs = std::filesystem;
@@ -19,7 +20,8 @@ private:
     void CmdEcho();
 
     void TokenizeString(const std::string& str, const char delim);
-    bool CheckCmdInPath(const std::string& cmd);
+    bool CheckCmd(const std::string& cmd);
+    bool ExecCmd(const std::string& cmd, const std::string cmdWithArgs);
 
     std::unordered_map<std::string, std::function<void()>> m_Cmds {
         {"type", std::bind(&Shell::CmdType, this)},
