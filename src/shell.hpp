@@ -21,6 +21,7 @@ private:
     void CmdPwd();
     void CmdCd();
 
+    void Run();
     void TokenizeString(const std::string& str, const char delim);
     bool CheckCmd(const std::string& cmd);
     bool ExecCmd(const std::string& cmd);

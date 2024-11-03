@@ -12,6 +12,10 @@ Shell::Shell(const std::string prompt) : m_Prompt(prompt) {
         std::cerr << "Environment variable PATH not found.\n";
     }
 
+    Run();
+}
+
+void Shell::Run() {
     while (true) {
         std::cout << m_Prompt;
 
