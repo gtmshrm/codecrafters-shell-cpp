@@ -7,7 +7,7 @@ Shell::Shell(const std::string prompt) : m_Prompt(prompt) {
     const char* pathEnv = std::getenv("PATH");
     if (pathEnv) {
         std::string paths(pathEnv);
-        TokenizeString(paths, ':');
+        AddPaths(paths, ':');
     } else {
         std::cerr << "Environment variable PATH not found.\n";
     }
@@ -91,7 +91,7 @@ void Shell::CmdCd() {
         std::cerr << "cd: " << path << ": No such file or directory\n";
 }
 
-void Shell::TokenizeString(const std::string& str, const char delim) {
+void Shell::AddPaths(const std::string& str, const char delim) {
     std::string token;
     std::istringstream iss(str);
 

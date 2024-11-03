@@ -16,7 +16,7 @@ public:
 
 private:
     void Run();
-    void TokenizeString(const std::string& str, const char delim);
+    void AddPaths(const std::string& str, const char delim);
     bool CheckCmd(const std::string& cmd);
     bool ExecCmd(const std::string& cmd);
 
