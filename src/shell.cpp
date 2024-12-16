@@ -150,26 +150,30 @@ std::vector<std::string> Shell::TokenizeStr(const std::string &str)
     std::vector<std::string> tokenized;
 
     for (size_t i = 0; i < str.size();) {
-        auto word = getNextWord(str, i);
-        tokenized.push_back(word.first);
-        i = word.second;
+        auto [word, end] = getNextWord(str, i);
+        tokenized.push_back(std::move(word));
+        i = end;
     }
     return tokenized;
 }
 
 std::pair<std::string, size_t> Shell::getNextWord(const std::string &str, const size_t start)
 {
-    size_t idx = start;
-
-    if (str[idx] == '\'') {
-        while ((str[++idx] != '\'' || str[idx - 1] == '\\') && idx < str.size());
+    auto quoted = [](const std::string& str, const size_t start) {
+        const char quote = str[start];
+        size_t idx = start;
+        while (idx < str.size() && (str[++idx] != quote || str[idx - 1] == '\\'));
         auto token = str.substr(start + 1, idx - start - 1);
-        for (idx++; !std::isspace(str[idx]) && idx < str.size(); idx++);
+        for (++idx; idx < str.size() && std::isspace(str[idx]); ++idx);
         return std::make_pair(std::move(token), idx);
-    }
+    };
 
-    while (!std::isspace(str[++idx]) && idx < str.size());
+    if (str[start] == '\'' || str[start] == '"') {
+        return quoted(str, start);
+    }
+    size_t idx = start;
+    while (idx < str.size() && !std::isspace(str[++idx]));
     auto token = str.substr(start, idx - start);
-    while (std::isspace(str[++idx]) && idx < str.size());
+    for (++idx; idx < str.size() && std::isspace(str[idx]); ++idx);
     return std::make_pair(std::move(token), idx);
 }
