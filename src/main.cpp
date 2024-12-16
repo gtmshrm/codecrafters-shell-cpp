@@ -1,6 +1,7 @@
 #include "shell.hpp"
 
-int main() {
+int main()
+{
     Shell sh;
 
     return 0;
